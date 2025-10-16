@@ -1,0 +1,45 @@
+<h2>Detalle del estudiante</h2>
+<div *ngIf="loading" class="loading">Cargando...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<section *ngIf="student">
+  <h3>{{ student.nombre }} {{ student.apellido }}</h3>
+  <p><strong>Email:</strong> {{ student.email }}</p>
+
+  <hr />
+
+  <form [formGroup]="form" (ngSubmit)="assign()">
+    <label for="courseId">Añadir curso</label>
+    <select id="courseId" formControlName="courseId">
+      <option [ngValue]="null">-- Selecciona un curso --</option>
+      <option *ngFor="let c of allCourses" [ngValue]="c.id">{{ c.nombre }}</option>
+    </select>
+    <button type="submit" [disabled]="!form.value.courseId">Asignar</button>
+  </form>
+
+  <h4 style="margin-top:16px;">Cursos asignados</h4>
+  <table *ngIf="assigned?.length; else noCourses">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let c of assigned">
+        <td>{{ c.id }}</td>
+        <td>{{ c.nombre }}</td>
+        <td>{{ c.descripcion }}</td>
+        <td class="actions">
+          <button (click)="remove(c.id!)" data-variant="danger">Quitar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #noCourses>
+    <p>No tiene cursos asignados.</p>
+  </ng-template>
+</section>

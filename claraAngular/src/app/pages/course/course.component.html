@@ -1,0 +1,59 @@
+<h2>Cursos</h2>
+
+<div *ngIf="loading" class="loading">Cargando...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div>
+    <label for="nombre">Nombre</label>
+    <input id="nombre" type="text" formControlName="nombre" placeholder="Nombre del curso" />
+    <small *ngIf="form.get('nombre')?.touched && form.get('nombre')?.invalid">
+      El nombre es obligatorio (máx. 120).
+    </small>
+  </div>
+
+  <div>
+    <label for="descripcion">Descripción</label>
+    <input id="descripcion" type="text" formControlName="descripcion" placeholder="Breve descripción (opcional)" />
+    <small *ngIf="form.get('descripcion')?.touched && form.get('descripcion')?.invalid">
+      Máximo 255 caracteres.
+    </small>
+  </div>
+
+  <div class="actions">
+    <button type="submit" [disabled]="form.invalid || loading">
+      {{ form.value.id ? 'Guardar cambios' : 'Crear curso' }}
+    </button>
+
+    <button type="button" *ngIf="form.value.id" (click)="form.reset()">
+      Cancelar
+    </button>
+  </div>
+</form>
+
+
+<table *ngIf="courses?.length; else noData">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Descripción</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let c of courses">
+      <td>{{ c.id }}</td>
+      <td>{{ c.nombre }}</td>
+      <td>{{ c.descripcion }}</td>
+      <td class="actions">
+  <button type="button" (click)="onEdit(c)">Editar</button>
+        <button type="button" (click)="delete(c.id!)" data-variant="danger">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<ng-template #noData>
+  <p>No hay cursos todavía.</p>
+</ng-template>

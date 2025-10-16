@@ -1,0 +1,57 @@
+<h2>Estudiantes</h2>
+
+<div *ngIf="loading" class="loading">Cargando...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div>
+    <label for="nombre">Nombre</label>
+    <input id="nombre" type="text" formControlName="nombre" placeholder="Nombre" />
+  </div>
+
+  <div>
+    <label for="apellido">Apellido</label>
+    <input id="apellido" type="text" formControlName="apellido" placeholder="Apellido" />
+  </div>
+
+  <div>
+    <label for="email">Email</label>
+    <input id="email" type="email" formControlName="email" placeholder="email@dominio.com" />
+  </div>
+
+  <div class="actions">
+    <button type="submit" [disabled]="form.invalid || loading">
+      {{ form.value.id ? 'Guardar cambios' : 'Crear estudiante' }}
+    </button>
+    <button type="button" *ngIf="form.value.id" (click)="cancelEdit()">Cancelar</button>
+  </div>
+</form>
+
+<table *ngIf="students?.length; else noData">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Email</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let s of students">
+      <td>{{ s.id }}</td>
+      <td>{{ s.nombre }}</td>
+      <td>{{ s.apellido }}</td>
+      <td>{{ s.email }}</td>
+      <td class="actions">
+        <button type="button" routerLink="/student/{{ s.id }}" data-variant="detail" >Ver detalle</button>
+        <button type="button" (click)="startEdit(s)">Editar</button>
+        <button type="button" (click)="delete(s.id!)" data-variant="danger">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<ng-template #noData>
+  <p>No hay estudiantes todavía.</p>
+</ng-template>

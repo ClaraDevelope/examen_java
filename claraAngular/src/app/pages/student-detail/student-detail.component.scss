@@ -1,0 +1,135 @@
+:host {
+  display: block;
+  padding: 16px;
+  color: #111827;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-weight: 600;
+}
+
+h3 {
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+
+h4 {
+  margin: 16px 0 8px;
+  font-weight: 600;
+}
+
+.loading {
+  margin: 8px 0;
+}
+
+.error {
+  margin: 8px 0;
+  color: #b00020;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: #e5e7eb;
+  margin: 16px 0;
+}
+
+/* Form seleccionar curso */
+form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+
+  label {
+    font-size: 0.95rem;
+    color: #374151;
+  }
+
+  select {
+    min-width: 260px;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+
+    &:focus {
+      outline: none;
+      border-color: #4f46e5;
+    }
+  }
+
+  button[type='submit'] {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    background: #4f46e5;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.05s ease, opacity 0.15s ease;
+
+    &:hover { opacity: 0.95; }
+    &:active { transform: translateY(1px); }
+    &:disabled { opacity: 0.6; cursor: not-allowed; }
+  }
+}
+
+/* Tabla de cursos asignados */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  border: 1px solid #e9e9e9;
+  border-radius: 10px;
+  overflow: hidden;
+
+  thead {
+    background: #f6f7fb;
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      padding: 12px;
+      font-size: 0.95rem;
+      color: #333;
+      border-bottom: 1px solid #e9e9e9;
+    }
+  }
+
+  tbody {
+    tr {
+      &:nth-child(even) { background: #fafafa; }
+      &:hover { background: #f3f6ff; }
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #efefef;
+      vertical-align: middle;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+
+  button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    background: #e5e7eb;
+    color: #111827;
+    cursor: pointer;
+
+    &:hover { opacity: 0.9; }
+
+    &[data-variant='danger'] {
+      background: #e11d48; /* rose-600 */
+      color: #fff;
+    }
+  }
+}
