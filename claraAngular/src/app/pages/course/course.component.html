@@ -1,59 +1,109 @@
-<h2>Cursos</h2>
+<h2 class="view-title">Cursos</h2>
 
-<div *ngIf="loading" class="loading">Cargando...</div>
-<div *ngIf="error" class="error">{{ error }}</div>
+<div *ngIf="loading" class="alert loading" role="status" aria-live="polite">
+  <span class="spinner" aria-hidden="true"></span>
+  Cargando cursos…
+</div>
 
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <div>
-    <label for="nombre">Nombre</label>
-    <input id="nombre" type="text" formControlName="nombre" placeholder="Nombre del curso" />
-    <small *ngIf="form.get('nombre')?.touched && form.get('nombre')?.invalid">
-      El nombre es obligatorio (máx. 120).
-    </small>
-  </div>
+<div *ngIf="error" class="alert error" role="alert">
+  {{ error }}
+</div>
 
-  <div>
-    <label for="descripcion">Descripción</label>
-    <input id="descripcion" type="text" formControlName="descripcion" placeholder="Breve descripción (opcional)" />
-    <small *ngIf="form.get('descripcion')?.touched && form.get('descripcion')?.invalid">
-      Máximo 255 caracteres.
-    </small>
-  </div>
+<section class="card">
+  <header class="card-header">
+    <h3>{{ form.value.id ? 'Editar curso' : 'Crear curso' }}</h3>
+    <p class="muted" *ngIf="!form.value.id">Añade un curso con nombre y (opcional) descripción.</p>
+  </header>
 
-  <div class="actions">
-    <button type="submit" [disabled]="form.invalid || loading">
-      {{ form.value.id ? 'Guardar cambios' : 'Crear curso' }}
-    </button>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid" novalidate>
+    <div class="field">
+      <label for="nombre">Nombre <span aria-hidden="true" class="req">*</span></label>
+      <input
+        id="nombre"
+        type="text"
+        formControlName="nombre"
+        placeholder="Nombre del curso"
+        [attr.aria-invalid]="form.get('nombre')?.touched && form.get('nombre')?.invalid"
+        [class.invalid]="form.get('nombre')?.touched && form.get('nombre')?.invalid"
+      />
+      <small class="hint error"
+        *ngIf="form.get('nombre')?.touched && form.get('nombre')?.invalid">
+        El nombre es obligatorio (máx. 120).
+      </small>
+    </div>
 
-    <button type="button" *ngIf="form.value.id" (click)="form.reset()">
-      Cancelar
-    </button>
-  </div>
-</form>
+    <div class="field">
+      <label for="descripcion">Descripción</label>
+      <input
+        id="descripcion"
+        type="text"
+        formControlName="descripcion"
+        placeholder="Breve descripción (opcional)"
+        [attr.aria-invalid]="form.get('descripcion')?.touched && form.get('descripcion')?.invalid"
+        [class.invalid]="form.get('descripcion')?.touched && form.get('descripcion')?.invalid"
+      />
+      <small class="hint error"
+        *ngIf="form.get('descripcion')?.touched && form.get('descripcion')?.invalid">
+        Máximo 255 caracteres.
+      </small>
+    </div>
 
+    <div class="actions">
+      <button type="submit" class="btn primary" [disabled]="form.invalid || loading">
+        {{ form.value.id ? 'Guardar cambios' : 'Crear curso' }}
+      </button>
+      <button type="button" class="btn ghost" *ngIf="form.value.id" (click)="form.reset()">
+        Cancelar
+      </button>
+    </div>
+  </form>
+</section>
 
-<table *ngIf="courses?.length; else noData">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Nombre</th>
-      <th>Descripción</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let c of courses">
-      <td>{{ c.id }}</td>
-      <td>{{ c.nombre }}</td>
-      <td>{{ c.descripcion }}</td>
-      <td class="actions">
-  <button type="button" (click)="onEdit(c)">Editar</button>
-        <button type="button" (click)="delete(c.id!)" data-variant="danger">Eliminar</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<section class="card">
+  <header class="card-header">
+    <h3>Listado</h3>
+    <p class="muted" *ngIf="courses?.length">Total: {{ courses.length }}</p>
+  </header>
 
-<ng-template #noData>
-  <p>No hay cursos todavía.</p>
-</ng-template>
+  <ng-container *ngIf="courses?.length; else noData">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 90px;">ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th style="width: 220px;" class="center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of courses">
+            <td><code class="id-badge">#{{ c.id }}</code></td>
+            <td class="cell-strong">{{ c.nombre }}</td>
+            <td class="cell-muted">{{ c.descripcion || '—' }}</td>
+            <td class="center">
+              <div class="actions inline">
+                <button type="button" class="btn ghost" (click)="onEdit(c)">Editar</button>
+                <button
+                  type="button"
+                  class="btn danger"
+                  (click)="delete(c.id!)">
+                  Eliminar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+
+  <ng-template #noData>
+    <div class="empty">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 6h18v2H3V6zm2 4h14v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-9zm4 2v6h2v-6H9zm4 0v6h2v-6h-2z"/>
+      </svg>
+      <p>No hay cursos todavía.</p>
+    </div>
+  </ng-template>
+</section>

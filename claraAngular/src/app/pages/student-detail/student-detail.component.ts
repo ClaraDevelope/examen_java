@@ -68,7 +68,6 @@ export class StudentDetailComponent implements OnInit {
       }
     });
 
-    // todos los cursos (para seleccionar y asignar)
     this.courseService.getAll().subscribe({
       next: cs => this.allCourses = cs ?? [],
       error: err => console.error(err)

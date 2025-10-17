@@ -55,7 +55,7 @@ export class StudentComponent implements OnInit {
       apellido: s.apellido,
       email: s.email
     });
-    // Scroll sólo si `window` está disponible (evita errores en SSR o entornos sin DOM)
+
     if (typeof window !== 'undefined' && window?.scrollTo) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }

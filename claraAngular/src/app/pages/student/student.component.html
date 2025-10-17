@@ -1,57 +1,121 @@
-<h2>Estudiantes</h2>
+<h2 class="view-title">Estudiantes</h2>
 
-<div *ngIf="loading" class="loading">Cargando...</div>
-<div *ngIf="error" class="error">{{ error }}</div>
+<div *ngIf="loading" class="alert loading" role="status" aria-live="polite">
+  <span class="spinner" aria-hidden="true"></span>
+  Cargando estudiantes…
+</div>
 
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <div>
-    <label for="nombre">Nombre</label>
-    <input id="nombre" type="text" formControlName="nombre" placeholder="Nombre" />
-  </div>
+<div *ngIf="error" class="alert error" role="alert">
+  {{ error }}
+</div>
 
-  <div>
-    <label for="apellido">Apellido</label>
-    <input id="apellido" type="text" formControlName="apellido" placeholder="Apellido" />
-  </div>
+<section class="card">
+  <header class="card-header">
+    <h3>{{ form.value.id ? 'Editar estudiante' : 'Crear estudiante' }}</h3>
+    <p class="muted" *ngIf="!form.value.id">Añade nombre, apellido y email.</p>
+  </header>
 
-  <div>
-    <label for="email">Email</label>
-    <input id="email" type="email" formControlName="email" placeholder="email@dominio.com" />
-  </div>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid" novalidate>
+    <div class="field">
+      <label for="nombre">Nombre <span class="req" aria-hidden="true">*</span></label>
+      <input
+        id="nombre"
+        type="text"
+        formControlName="nombre"
+        placeholder="Nombre"
+        [class.invalid]="form.get('nombre')?.touched && form.get('nombre')?.invalid"
+        [attr.aria-invalid]="form.get('nombre')?.touched && form.get('nombre')?.invalid"
+      />
+    </div>
 
-  <div class="actions">
-    <button type="submit" [disabled]="form.invalid || loading">
-      {{ form.value.id ? 'Guardar cambios' : 'Crear estudiante' }}
-    </button>
-    <button type="button" *ngIf="form.value.id" (click)="cancelEdit()">Cancelar</button>
-  </div>
-</form>
+    <div class="field">
+      <label for="apellido">Apellido <span class="req" aria-hidden="true">*</span></label>
+      <input
+        id="apellido"
+        type="text"
+        formControlName="apellido"
+        placeholder="Apellido"
+        [class.invalid]="form.get('apellido')?.touched && form.get('apellido')?.invalid"
+        [attr.aria-invalid]="form.get('apellido')?.touched && form.get('apellido')?.invalid"
+      />
+    </div>
 
-<table *ngIf="students?.length; else noData">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Nombre</th>
-      <th>Apellido</th>
-      <th>Email</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let s of students">
-      <td>{{ s.id }}</td>
-      <td>{{ s.nombre }}</td>
-      <td>{{ s.apellido }}</td>
-      <td>{{ s.email }}</td>
-      <td class="actions">
-        <button type="button" routerLink="/student/{{ s.id }}" data-variant="detail" >Ver detalle</button>
-        <button type="button" (click)="startEdit(s)">Editar</button>
-        <button type="button" (click)="delete(s.id!)" data-variant="danger">Eliminar</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+    <div class="field">
+      <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        placeholder="email@dominio.com"
+        [class.invalid]="form.get('email')?.touched && form.get('email')?.invalid"
+        [attr.aria-invalid]="form.get('email')?.touched && form.get('email')?.invalid"
+      />
+    </div>
 
-<ng-template #noData>
-  <p>No hay estudiantes todavía.</p>
-</ng-template>
+    <div class="actions">
+      <button type="submit" class="btn primary" [disabled]="form.invalid || loading">
+        {{ form.value.id ? 'Guardar cambios' : 'Crear estudiante' }}
+      </button>
+      <button type="button" class="btn ghost" *ngIf="form.value.id" (click)="cancelEdit()">
+        Cancelar
+      </button>
+    </div>
+  </form>
+</section>
+
+<section class="card">
+  <header class="card-header">
+    <h3>Listado</h3>
+    <p class="muted" *ngIf="students?.length">Total: {{ students.length }}</p>
+  </header>
+
+  <ng-container *ngIf="students?.length; else noData">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 90px;">ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th style="width: 280px;" class="center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of students">
+            <td><code class="id-badge">#{{ s.id }}</code></td>
+            <td class="cell-strong">{{ s.nombre }}</td>
+            <td>{{ s.apellido }}</td>
+            <td class="cell-muted">{{ s.email }}</td>
+            <td class="center">
+              <div class="actions inline">
+                <a class="btn ghost" [routerLink]="['/student', s.id]">
+                  Ver detalle
+                </a>
+                <button type="button" class="btn ghost" (click)="startEdit(s)">
+                  Editar
+                </button>
+                <button
+                  type="button"
+                  class="btn danger"
+                  (click)="delete(s.id!)"
+                >
+                  Eliminar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+
+  <ng-template #noData>
+    <div class="empty">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 6h18v2H3V6zm2 4h14v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-9z"/>
+      </svg>
+      <p>No hay estudiantes todavía.</p>
+    </div>
+  </ng-template>
+</section>

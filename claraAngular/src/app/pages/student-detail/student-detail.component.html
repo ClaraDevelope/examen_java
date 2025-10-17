@@ -1,45 +1,80 @@
-<h2>Detalle del estudiante</h2>
-<div *ngIf="loading" class="loading">Cargando...</div>
-<div *ngIf="error" class="error">{{ error }}</div>
+<h2 class="view-title">Detalle del estudiante</h2>
 
-<section *ngIf="student">
-  <h3>{{ student.nombre }} {{ student.apellido }}</h3>
-  <p><strong>Email:</strong> {{ student.email }}</p>
+<div *ngIf="loading" class="alert loading" role="status" aria-live="polite">
+  <span class="spinner" aria-hidden="true"></span>
+  Cargando…
+</div>
 
-  <hr />
+<div *ngIf="error" class="alert error" role="alert">
+  {{ error }}
+</div>
 
-  <form [formGroup]="form" (ngSubmit)="assign()">
+<section *ngIf="student" class="card">
+  <header class="card-header">
+    <h3>{{ student.nombre }} {{ student.apellido }}</h3>
+    <p class="muted">
+      <strong>Email:</strong>
+      <a [href]="'mailto:' + student.email"> {{ student.email }}</a>
+    </p>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="assign()" class="assign-form" novalidate>
     <label for="courseId">Añadir curso</label>
-    <select id="courseId" formControlName="courseId">
-      <option [ngValue]="null">-- Selecciona un curso --</option>
+    <select id="courseId" formControlName="courseId"
+            [attr.aria-invalid]="!form.value.courseId && form.touched"
+            [class.invalid]="!form.value.courseId && form.touched">
+      <option [ngValue]="null">— Selecciona un curso —</option>
       <option *ngFor="let c of allCourses" [ngValue]="c.id">{{ c.nombre }}</option>
     </select>
-    <button type="submit" [disabled]="!form.value.courseId">Asignar</button>
-  </form>
 
-  <h4 style="margin-top:16px;">Cursos asignados</h4>
-  <table *ngIf="assigned?.length; else noCourses">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Descripción</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let c of assigned">
-        <td>{{ c.id }}</td>
-        <td>{{ c.nombre }}</td>
-        <td>{{ c.descripcion }}</td>
-        <td class="actions">
-          <button (click)="remove(c.id!)" data-variant="danger">Quitar</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <button type="submit" class="btn primary" [disabled]="!form.value.courseId">
+      Asignar
+    </button>
+  </form>
+</section>
+
+<section class="card">
+  <header class="card-header">
+    <h3>Cursos asignados</h3>
+    <p class="muted" *ngIf="assigned?.length">Total: {{ assigned.length }}</p>
+  </header>
+
+  <ng-container *ngIf="assigned?.length; else noCourses">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 90px;">ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th style="width: 160px;" class="center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of assigned">
+            <td><code class="id-badge">#{{ c.id }}</code></td>
+            <td class="cell-strong">{{ c.nombre }}</td>
+            <td class="cell-muted">{{ c.descripcion || '—' }}</td>
+            <td class="center">
+              <div class="actions inline">
+                <button type="button" class="btn danger"
+                        (click)="remove(c.id!)">
+                  Quitar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
 
   <ng-template #noCourses>
-    <p>No tiene cursos asignados.</p>
+    <div class="empty">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 6h18v2H3V6zM5 10h14v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-9z"/>
+      </svg>
+      <p>No tiene cursos asignados.</p>
+    </div>
   </ng-template>
 </section>
